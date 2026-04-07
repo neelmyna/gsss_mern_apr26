@@ -54,7 +54,27 @@ server/tsconfig.json
     "strict": true
   }
 }
+--------------------------------
+Go to the package json file and under the scripts, add the new entry of key-value pair. This is to simplify the command to run our backend app.
 
+server/package.json [Update]
+
+{
+  ...
+  "main": "index.js",
+  "scripts": {
+    ...
+    "dev": "ts-node-dev --respawn --transpile-only index.ts"
+  },
+  ...
+}
+-----------------------------
+Development environment settings for connecting to the DB
+
+server/.env (under this new file, add the below code with port number and connection string)
+
+TRAINER_APP_PORT=5000
+TRAINER_MONGO_URI=mongodb://mongo:27017/trainerdb
 
 ----------------------------------------------------
 Run the below command:
