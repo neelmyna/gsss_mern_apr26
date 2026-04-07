@@ -37,6 +37,23 @@ To migrate or upgrade our project from js to ts, run the below commands:
 npm install -D ts-node-dev typescript
 npm install -D @types/cors
 npm install -D @types/express @types/node 
+----------------------------
+In the file: server/.gitignore
+Add the below, so that they are not pushed to the Repo
+
+node_modules/
+.env
+------------------------------
+server/tsconfig.json
+
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "strict": true
+  }
+}
 
 
 ----------------------------------------------------
