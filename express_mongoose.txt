@@ -1,0 +1,260 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------Steps to create backend App:
+
+1. create a folder named "trainerapp" inide the Repo folder for our Web-App 
+2. Create 2 folders named "client" and "server" each for frontend and backend implementations respectively.
+3. Create the initial/empty project project inside the server folder by using the command:
+$ npm init
+
+4. LIBRARIES WE NEED FOR BACKEND DEVELOPMENT:
+We are developing the backend app using JS. More specifically using Type Script (ts).
+So we need Node (which is already installed)
+In Js/TS, the (polular) library for backend development is "express"Using the backend library express, we must connect to our DB which is MongoDb. For this we need the DB driver software, which is mongoose.
+We must add security layer to our backend app which is provided by cors.
+dotenv is the library we shall use for environment variables settings.
+
+5.
+After the libraries are installed, we can see them in the dependencies in package.json
+
+The libraries we need not push to the github. Hence create a file named ".gitignore" in server folder and add the node_modules/
+
+To migrate or upgrade our project from js to ts, run the below commands:
+
+npm install -D ts-node-dev typescript
+npm install -D @types/cors
+npm install -D @types/express @types/node 
+
+
+----------------------------------------------------
+Run the below command:
+npm init -y
+
+Open the project in VS code
+Create the index.js file
+
+program1
+index.js
+console.log('My first express program')
+
+Run the command:
+node index.js
+
+program2:
+Open the file:
+package.json -> scripts, add the below entry:
+"serve" : "index.js"
+
+Now if we run the command:
+npm run serve
+It opens the index.js file
+
+Now if we change the entry as:
+"serve" : "node index.js"
+
+The command:
+npm run serve
+runs the file index.js
+------------------------------------------------
+NOTES
+www.npmjs.com
+This website has details of all the dependencies, the necessary commands and all other details.
+Use the search bar to type mongoose, sequelize, express etc.
+
+EXPRESS IS THE NODE API MODULES
+Express.js, commonly known as Express, is a web application framework for Node.js. It provides a robust set of features for building web and mobile applications and APIs. Here are some key aspects of Express.js:
+
+1. **Minimalist and Flexible**: Express.js is minimalist, providing a fundamental set of features for web applications. It is highly flexible, allowing developers to add additional functionality through middleware and third-party modules.
+
+2. **Middleware**: Middleware functions are at the core of Express.js. They are functions that have access to the request (`req`) and response (`res`) objects and can modify them or execute any code before sending a response to the client. Middleware functions can be used for tasks such as logging, authentication, parsing request bodies, etc.
+
+3. **Routing**: Express.js provides a simple and intuitive way to define routes for handling different HTTP requests (`GET`, `POST`, `PUT`, `DELETE`, etc.). Routes are matched based on the URL and HTTP method, allowing developers to define how the application responds to client requests.
+
+4. **Template Engines**: Although Express.js itself does not include a built-in template engine, it can work with various template engines (like EJS, Pug, Handlebars, etc.) to generate HTML dynamically.
+
+5. **Error Handling**: Express.js provides mechanisms for handling errors that occur during the execution of middleware or route handlers. Developers can define error-handling middleware to centralize error handling logic.
+
+6. **Integration with Node.js**: Express.js is built on top of Node.js, leveraging its capabilities and providing a higher level of abstraction for building web applications. It is designed to be unopinionated, allowing developers to structure their applications as they see fit.
+
+7. **Extensibility**: Express.js can be extended with additional middleware and modules to add functionality such as authentication, session management, database integration (e.g., MongoDB, MySQL), etc.
+
+8. **Popularity and Ecosystem**: Express.js is widely used in the Node.js community and has a large ecosystem of extensions and plugins available through npm (Node Package Manager).
+
+In summary, Express.js simplifies the process of building web applications and APIs with Node.js by providing a powerful and flexible framework with robust features for routing, middleware, and error handling. It is suitable for both small-scale applications and large-scale projects due to its extensibility and ease of use.
+
+To install express, use:
+npm i express
+i is shortcut for install
+
+We can observe that, there is folder node_modules created, package-lock.json is created and in the package.json, a new entry is created within dependencies.
+
+WHAT IS Package-lock.json ?
+`package-lock.json` is a file automatically generated by npm (Node Package Manager) when you run `npm install` or `npm ci` commands. It serves several important purposes:
+
+1. **Dependency Versioning**: `package-lock.json` keeps track of the exact version of every package and its dependencies that npm installs. This ensures that every member of your team and every environment where your project runs gets the same dependency tree, avoiding issues where different installations could result in different versions being used.
+
+2. **Deterministic Builds**: By locking the versions in `package-lock.json`, npm ensures that subsequent installs using the same file will install the exact same versions of dependencies. This helps in creating deterministic builds, where the build outcome is predictable and consistent across different environments.
+
+3. **Faster Installs**: When `package-lock.json` is present, npm uses it to fetch dependencies directly from the specified versions listed in the file, without needing to resolve versions again. This can speed up installation times compared to resolving dependencies from scratch.
+
+4. **Integrity Check**: `package-lock.json` includes a cryptographic hash of the contents of each package that is installed. This allows npm to verify that the contents of each installed package have not been tampered with, providing a level of security and ensuring the integrity of your project's dependencies.
+
+5. **Deployment Consistency**: `package-lock.json` is typically committed to version control (e.g., Git) along with your project's codebase. This ensures that when your project is deployed to a production environment or shared with collaborators, everyone uses the exact same versions of dependencies.
+
+In summary, `package-lock.json` is a crucial file managed by npm to provide dependency versioning, ensure reproducible builds, enhance installation speed, verify package integrity, and maintain consistency across different development and deployment environments.
+-----------------------------
+Add the extension: co-pilot for auto suggestions
+
+program3
+index.js:
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000')
+  });
+
+//  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+----------------------------------
+NOTES for app.get() and app.listen() methods:
+
+In the context of Node.js applications, app.listen() is a method used to start a server and make it listen for incoming connections on a specified port and optional hostname. It is typically used with frameworks like Express.js to create HTTP servers.
+
+Here’s a breakdown of how app.listen() works:
+
+Creating an Express Application: First, you create an instance of an Express application by calling const app = express();. This app object represents your Express application.
+
+Using app.listen(): Once you have defined your routes, middleware, and other configurations for your Express application, you use app.listen() to start the server. The method signature for app.listen() typically looks like this:
+
+app.listen(port[, host][, backlog][, callback])
+
+port: Required. The port number where your server will listen for incoming requests.
+host: Optional. The hostname or IP address on which the server should listen. Defaults to localhost if not specified.
+backlog: Optional. The maximum length of the queue of pending connections. This is not often specified in typical usage.
+callback: Optional. A callback function that is called once the server has started listening.
+
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+In this example:
+
+We define a simple route (app.get('/')) that responds with "Hello World!" when the root URL (/) is accessed.
+app.listen(port, ...) starts the server on port 3000. Once the server is running, it logs a message to the console indicating where the server is listening.
+Server Lifecycle: After app.listen() is called, the server starts listening for incoming requests. It remains active until it is stopped either manually (e.g., by pressing Ctrl + C in the terminal) or programmatically (by calling server.close() on the returned server instance).
+
+Usage in Non-Express Applications: While app.listen() is commonly associated with Express.js, other Node.js HTTP server implementations (such as the built-in http module) also have similar methods (server.listen()). The principle remains the same: to start a server and make it listen for incoming connections.
+
+In summary, app.listen() is a method used in Express.js to start a server and specify the port and optionally the hostname on which the server will listen for incoming HTTP requests.
+-------------------------------------------------------
+program4
+index.js:
+const express = require('express');
+const app = express();
+const port = 3000;
+
+
+app.listen(port, () => {
+	console.log(`Server is running on http://localhost:${port}`);
+});
+
+app.get('/', (req, res) => {
+  res.send('The Response just came from the Backend Express!');
+});
+
+Run the above code:
+npm run serve
+
+Open the browser with URL to see the O/P: 
+localhost:3000
+
+Run the same Code using:
+Thunder Client
+Postman
+Insomnia
+
+See that the API endpoint is "Get"
+----------------------------------
+Add a new file:
+.gitignore
+
+Add entry into .gitignore:
+node_modules
+--------------------------
+Note:
+Any changes we apply to our code, to see the changes, we must stop the server and run the App again. To avoid this, we can install nodemon
+
+Now install nodemon:
+npm intall nodemon -D
+
+-D is to install it within our development
+-g is to install it globally
+
+package.json -> scripts, add the below entry:
+"dev" : "nodemon index.js"
+
+Now run:
+npm run dev
+
+-----------------------------
+const express = require('express');
+const mongoose = require('mongoose');
+const app = express();
+const port = 3000;
+
+const mongoURI = 'mongodb://127.0.0.1:27017/nithin_db';
+
+// Connect to MongoDB
+mongoose.connect(mongoURI)
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((err) => {
+  console.error('Error connecting to MongoDB', err);
+});
+
+// Disconnect from MongoDB
+const disconnectFromMongoDB = async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
+  } catch (err) {
+    console.error('Error disconnecting from MongoDB', err);
+  }
+};
+
+disconnectFromMongoDB();
+
+app.listen(port, () => {
+    console.log('Server is running on port 3000')
+  });
+
+//  console.log(`Server is running on http://localhost:${port}`);
+
+
+
+

@@ -1,0 +1,1483 @@
+Google Search mongo cloud
+Singup using google account
+Login
+Go to Clusters/instance:
+	Create new cluster (give a name to the instance)
+	select free tier
+	
+
+E-Commerce system Tables/Collections, Problem Statements and Solution on Mongo
+
+# Tables / Collections
+```text
+users: id, name, email
+products: id, name, price, stock
+orders: id, user_id, total, created_at
+    - order_items: order_id, product_id, quantity
+```
+
+# Data:
+```csv
+## **users.csv**
+id,name,email
+1,Arun Kumar,arun@example.com
+2,Divya Raj,divya@example.com
+3,Vikram Singh,vikram@example.com
+4,Meena Lakshmi,meena@example.com
+5,Karthik R,karthik@example.com
+
+## **products.csv*
+id,name,price,stock
+1,Mobile Phone,15000,50
+2,Laptop,60000,20
+3,Headphones,2000,100
+4,Smart Watch,5000,75
+5,Keyboard,1500,60
+
+## **orders.csv**
+id,user_id,total,created_at
+1,1,17000,2026-03-25 10:15:00
+2,2,60000,2026-03-26 12:30:00
+3,3,3500,2026-03-27 09:45:00
+4,1,65000,2026-03-28 14:10:00
+5,4,5000,2026-03-29 16:20:00
+
+## **order_items.csv**
+order_id,product_id,quantity
+1,1,1
+1,3,1
+2,2,1
+3,3,1
+3,5,1
+4,2,1
+4,3,1
+5,4,1
+```
+
+# Practice Problems 
+```text
+1. Create a database named `ecommerce_db`.
+2. Create collections:
+   - users
+   - products
+   - orders
+3. Insert sample documents into each collection based on given CSV data.
+4. Design `orders` collection using:
+   - Embedded documents for order_items.
+5. Alternatively, redesign `orders` using:
+   - Referencing (store product_id instead of embedding details).
+
+-- -
+
+6. Insert a new user document.
+7. Insert a new product document.
+8. Insert an order with multiple items (embedded array).
+9. Update stock of all products by reducing 5 units.
+10. Increase price of all products by 10%.
+11. Delete users who have never placed an order.
+12. Update a specific product’s price.
+13. Add a new field `status` to all orders (default: "placed").
+
+-- -
+
+14. Fetch all users.
+15. Fetch all products with price greater than 5000.
+16. Retrieve all orders placed by a specific user.
+17. Display product names and their stock.
+18. Find total number of orders.
+19. Get products with stock between 50 and 100.
+20. Find users whose name starts with 'A'.
+21. Retrieve orders placed after a specific date.
+22. Find products not in stock (stock = 0).
+23. Get orders with total between 3000 and 20000.
+
+-- -
+
+24. Calculate average product price.
+25. Find maximum and minimum product price.
+26. Convert all user names to uppercase using aggregation.
+27. Extract date (YYYY-MM-DD) from order created_at.
+28. Count total number of products.
+29. Find total orders per user.
+30. Calculate total revenue generated per user.
+31. Find number of products sold per product.
+32. Get users who placed more than 1 order.
+33. Find products with total sales quantity > 1.
+
+-- -
+
+34. Retrieve orders along with user details.
+35. Display order details with product names.
+36. Get all products and their order quantities (include products not ordered).
+37. Find users who have never placed an order.
+38. Retrieve full order summary:
+    (user + product + quantity).
+
+-- -
+
+39. Find users who placed orders above average order value.
+40. Get products whose price is greater than average price.
+41. Find the most expensive product purchased in any order.
+42. Find latest order per user.
+43. Get top 3 most sold products.
+44. Find users who purchased more than 2 different products.
+
+-- - 
+
+45. Create an index on product name.
+46. Create a compound index on orders (user_id, created_at).
+47. Analyze query performance before and after indexing.
+48. Create a text index on product name and search products.
+
+-- - 
+
+49. Write a transaction to:
+    - Insert order
+    - Reduce product stock
+50. Rollback transaction if stock is insufficient.
+
+-- - 
+
+51. Redesign schema to support:
+    - Product categories (embedded vs referenced)
+52. Support multiple addresses per user.
+53. Add payment details:
+    - method (UPI, Card, COD)
+    - payment_status
+54. Track order status:
+    - placed, shipped, delivered, cancelled
+55. Maintain order history (status changes over time).
+
+-- -
+
+56. Implement soft delete for users and products.
+57. Design audit logs for order updates.
+58. Implement product reviews and ratings.
+59. Store product inventory history.
+60. Optimize schema for high-read performance (denormalization).
+```
+
+Prompt: Solution phase wise ie st 1-5, 6-13, 14-23, 24-33, 34-38, 39-44, 45-48, 49-50, 51-55, 56-60. Total 10 batches of response from you.
+
+# Solution 
+```js
+//1. Create a database named `ecommerce_db`.
+show databases
+show dbs
+use ecommerce_db
+
+//2. Create collections:
+//   - users
+//   - products
+//   - orders
+db.createCollection("users")
+db.createCollection("products")
+db.createCollection("orders")
+show collections
+
+//3. Insert sample documents into each collection based on given CSV data.
+db.users.insertMany([
+  { _id: 1, name: "Arun Kumar", email: "arun@example.com" },
+  { _id: 2, name: "Divya Raj", email: "divya@example.com" },
+  { _id: 3, name: "Vikram Singh", email: "vikram@example.com" },
+  { _id: 4, name: "Meena Lakshmi", email: "meena@example.com" },
+  { _id: 5, name: "Karthik R", email: "karthik@example.com" }
+])
+
+db.products.insertMany([
+  { _id: 1, name: "Mobile Phone", price: 15000, stock: 50 },
+  { _id: 2, name: "Laptop", price: 60000, stock: 20 },
+  { _id: 3, name: "Headphones", price: 2000, stock: 100 },
+  { _id: 4, name: "Smart Watch", price: 5000, stock: 75 },
+  { _id: 5, name: "Keyboard", price: 1500, stock: 60 }
+])
+
+db.users.find()
+db.products.find()
+
+//4. Design `orders` collection using:
+//   - Embedded documents for order_items.
+db.orders.insertMany([
+  {
+    _id: 1,
+    user_id: 1,
+    total: 17000,
+    created_at: new Date("2026-03-25T10:15:00"),
+    order_items: [
+      { product_id: 1, quantity: 1 },
+      { product_id: 3, quantity: 1 }
+    ]
+  },
+  {
+    _id: 2,
+    user_id: 2,
+    total: 60000,
+    created_at: new Date("2026-03-26T12:30:00"),
+    order_items: [
+      { product_id: 2, quantity: 1 }
+    ]
+  },
+  {
+    _id: 3,
+    user_id: 3,
+    total: 3500,
+    created_at: new Date("2026-03-27T09:45:00"),
+    order_items: [
+      { product_id: 3, quantity: 1 },
+      { product_id: 5, quantity: 1 }
+    ]
+  },
+  {
+    _id: 4,
+    user_id: 1,
+    total: 65000,
+    created_at: new Date("2026-03-28T14:10:00"),
+    order_items: [
+      { product_id: 2, quantity: 1 },
+      { product_id: 3, quantity: 1 }
+    ]
+  },
+  {
+    _id: 5,
+    user_id: 4,
+    total: 5000,
+    created_at: new Date("2026-03-29T16:20:00"),
+    order_items: [
+      { product_id: 4, quantity: 1 }
+    ]
+  }
+])
+
+db.orders.find()
+
+//5. Alternatively, redesign `orders` using:
+//   - Referencing (store product_id instead of embedding details).
+db.orders.insertOne({
+  _id: 6,
+  user_id: 2,
+  total: 17000,
+  created_at: new Date(),
+  order_items: [
+    { product_id: 1, quantity: 1 },
+    { product_id: 3, quantity: 1 }
+  ]
+})
+db.orders.find()
+
+/*
+**Embedded vs Referencing (VERY IMPORTANT INTERVIEW POINT)**
+| Feature           | Embedded     | Referencing     |
+| ----------------- | ------------ | --------------- |
+| Read performance  | ✅ Fast       | ❌ Needs $lookup |
+| Write flexibility | ❌ Limited    | ✅ Flexible      |
+| Data duplication  | ❌ Yes        | ✅ No            |
+| Best use case     | Orders, logs | Users, products |
+
+**When to use Embedded**
+* Order + order_items (ALWAYS embedded in real systems)
+
+**When to use Referencing**
+* User, Product (shared data)
+*/
+
+// -- -
+
+//6. Insert a new user document.
+db.users.insertOne({
+  _id: 6,
+  name: "Suresh Babu",
+  email: "suresh@example.com"
+})
+
+db.users.find()
+
+//7. Insert a new product document.
+db.products.insertOne({
+  _id: 6,
+  name: "Mouse",
+  price: 800,
+  stock: 120
+})
+
+db.products.find()
+
+//8. Insert an order with multiple items (embedded array).
+db.orders.insertOne({
+  _id: 7,
+  user_id: 2,
+  total: 15800,
+  created_at: new Date(),
+  order_items: [
+    { product_id: 1, quantity: 1 },
+    { product_id: 5, quantity: 2 }
+  ]
+})
+
+db.orders.find()
+
+//9. Update stock of all products by reducing 5 units.
+db.products.updateMany(
+  {},
+  { $inc: { stock: -5 } }
+)
+// `$inc` is used for increment/decrement.
+
+db.products.find()
+
+//10. Increase price of all products by 10%.
+db.products.updateMany(
+  {},
+  [
+    {
+      $set: {
+        price: { $multiply: ["$price", 1.1] }
+      }
+    }
+  ])
+// Uses **aggregation pipeline update** (advanced Mongo feature 🔥)
+db.products.find()
+
+//11. Delete users who have never placed an order.
+db.users.deleteMany({
+  _id: {
+    $nin: db.orders.distinct("user_id")
+  }
+})
+/*
+Logic:
+    * Get all user_ids from orders
+    * Delete users NOT in that list
+*/
+db.users.find()
+
+//12. Update a specific product’s price.
+db.products.updateOne(
+  { name: "Laptop" },
+  { $set: { price: 65000 } }
+)
+db.products.find()
+
+//13. Add a new field `status` to all orders (default: "placed").
+db.orders.updateMany(
+  {},
+  { $set: { status: "placed" } }
+)
+db.orders.find()
+
+/*
+Update Operators
+* `$set` → assign value
+* `$inc` → increment/decrement
+* `$multiply` → calculation
+Query Operators
+* `$nin` → NOT IN
+* `distinct()` → unique values
+Advanced Feature
+* Aggregation inside update (🔥 interview favorite)
+Real-World Notes
+* Stock update should ideally happen **per order (transaction)**
+* Bulk updates like this are mostly for **admin operations**
+*/
+
+//-- -
+
+//14. Fetch all users.
+db.users.find()
+// Returns all documents
+
+//15. Fetch all products with price greater than 5000.
+db.products.find({
+  price: { $gt: 5000 }
+})
+// `$gt` = greater than
+
+//16. Retrieve all orders placed by a specific user.  (e.g., user_id = 1)
+db.orders.find({
+  user_id: 1
+})
+
+//17. Display product names and their stock.
+db.products.find(
+  {},
+  { name: 1, stock: 1, _id: 0 }
+)
+/*
+Projection:
+* `1` → include
+* `0` → exclude
+*/
+
+//18. Find total number of orders.
+db.orders.countDocuments()
+
+//19. Get products with stock between 50 and 100.
+db.products.find({
+  stock: { $gte: 50, $lte: 100 }
+})
+// Range query
+
+//20. Find users whose name starts with 'A'.
+db.users.find({
+  name: { $regex: "^A" }
+})
+// Regex:* `^A` → starts with A
+
+//21. Retrieve orders placed after a specific date.
+db.orders.find({
+  created_at: { $gt: new Date("2026-03-27") }
+})
+
+//22. Find products not in stock (stock = 0).
+db.products.find({
+  stock: 0
+})
+
+//23. Get orders with total between 3000 and 20000.
+db.orders.find({
+  total: { $gte: 3000, $lte: 20000 }
+})
+
+/*
+**Key MongoDB Query Operators (VERY IMPORTANT)**
+| Operator | Meaning             |
+| -------- | ------------------- |
+| `$gt`    | Greater than        |
+| `$lt`    | Less than           |
+| `$gte`   | ≥                   |
+| `$lte`   | ≤                   |
+| `$regex` | Pattern matching    |
+| `$and`   | Multiple conditions |
+| `$or`    | Either condition    |
+
+Example (Advanced Filter)
+db.products.find({
+  $and: [
+    { price: { $gt: 1000 } },
+    { stock: { $lt: 80 } }
+  ]
+})
+
+Real-World Tips
+* Always use **projection** → reduces data transfer
+* Use **indexes (later phase)** for these queries
+* Regex queries can be slow without indexing
+*/
+
+//-- -
+
+//24. Calculate average product price.
+db.products.aggregate([
+  {
+    $group: {
+      _id: null,
+      avgPrice: { $avg: "$price" }
+    }
+  }
+])
+
+//25. Find maximum and minimum product price.
+db.products.aggregate([
+  {
+    $group: {
+      _id: null,
+      maxPrice: { $max: "$price" },
+      minPrice: { $min: "$price" }
+    }
+  }
+])
+
+//26. Convert all user names to uppercase using aggregation.
+db.users.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: { $toUpper: "$name" },
+      email: 1
+    }
+  }
+])
+
+//27. Extract date (YYYY-MM-DD) from order created_at.
+db.orders.aggregate([
+  {
+    $project: {
+      order_date: {
+        $dateToString: {
+          format: "%Y-%m-%d",
+          date: "$created_at"
+        }
+      }
+    }
+  }
+])
+
+//28. Count total number of products.
+db.products.aggregate([
+  {
+    $count: "total_products"
+  }
+])
+
+//29. Find total orders per user.
+db.orders.aggregate([
+  {
+    $group: {
+      _id: "$user_id",
+      total_orders: { $sum: 1 }
+    }
+  }
+])
+
+//30. Calculate total revenue generated per user.
+db.orders.aggregate([
+  {
+    $group: {
+      _id: "$user_id",
+      total_revenue: { $sum: "$total" }
+    }
+  }
+])
+
+//31. Find number of products sold per product.
+// Important: Uses **unwind (very important concept)**
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $group: {
+      _id: "$order_items.product_id",
+      total_quantity: { $sum: "$order_items.quantity" }
+    }
+  }
+])
+
+//32. Get users who placed more than 1 order.
+db.orders.aggregate([
+  {
+    $group: {
+      _id: "$user_id",
+      total_orders: { $sum: 1 }
+    }
+  },
+  {
+    $match: {
+      total_orders: { $gt: 1 }
+    }
+  }
+])
+
+//33. Find products with total sales quantity > 1.
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $group: {
+      _id: "$order_items.product_id",
+      total_sold: { $sum: "$order_items.quantity" }
+    }
+  },
+  {
+    $match: {
+      total_sold: { $gt: 1 }
+    }
+  }
+])
+/*
+**Core Aggregation Concepts (CRITICAL)**
+    `$group`Like SQL `GROUP BY`
+    `$project` Select / transform fields
+    `$unwind` Break array into multiple documents
+        Example:
+            order_items: [
+            { product_id: 1 },
+            { product_id: 3 }
+            ]
+            ➡ becomes:
+            { product_id: 1 }
+            { product_id: 3 }
+    `$match` Filter (like WHERE)
+    `$count` Count documents
+Real Interview Tip
+    Most important pipeline pattern: $unwind → $group → $match → $project
+*/
+
+//-- -
+
+//34. Retrieve orders along with user details.
+// Join: `orders → users`
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "user_id",
+      foreignField: "_id",
+      as: "user_details"
+    }
+  },
+  { $unwind: "$user_details" }
+])
+
+//35. Display order details with product names.
+// Join: `orders → products`
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $lookup: {
+      from: "products",
+      localField: "order_items.product_id",
+      foreignField: "_id",
+      as: "product_details"
+    }
+  },
+  { $unwind: "$product_details" },
+  {
+    $project: {
+      _id: 1,
+      product_name: "$product_details.name",
+      quantity: "$order_items.quantity"
+    }
+  }
+])
+
+//36. Get all products and their order quantities (include products not ordered).
+// LEFT JOIN behavior
+db.products.aggregate([
+  {
+    $lookup: {
+      from: "orders",
+      let: { productId: "$_id" },
+      pipeline: [
+        { $unwind: "$order_items" },
+        {
+          $match: {
+            $expr: {
+              $eq: ["$order_items.product_id", "$$productId"]
+            }
+          }
+        }
+      ],
+      as: "orders_info"
+    }
+  },
+  {
+    $project: {
+      name: 1,
+      total_ordered: {
+        $sum: "$orders_info.order_items.quantity"
+      }
+    }
+  }
+])
+// Even products with **no orders** will appear (important)
+
+//37. Find users who have never placed an order.
+db.users.aggregate([
+  {
+    $lookup: {
+      from: "orders",
+      localField: "_id",
+      foreignField: "user_id",
+      as: "orders"
+    }
+  },
+  {
+    $match: {
+      orders: { $size: 0 }
+    }
+  }
+])
+
+//38. Retrieve full order summary: (user + product + quantity).
+//  Real-world reporting query
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+
+  {
+    $lookup: {
+      from: "users",
+      localField: "user_id",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  { $unwind: "$user" },
+
+  {
+    $lookup: {
+      from: "products",
+      localField: "order_items.product_id",
+      foreignField: "_id",
+      as: "product"
+    }
+  },
+  { $unwind: "$product" },
+
+  {
+    $project: {
+      order_id: "$_id",
+      user_name: "$user.name",
+      product_name: "$product.name",
+      quantity: "$order_items.quantity"
+    }
+  }
+])
+
+/*
+**Key Concept: $lookup (MongoDB JOIN)**
+Syntax
+{
+  $lookup: {
+    from: "collection",
+    localField: "field",
+    foreignField: "field",
+    as: "output_array"
+  }
+}
+
+Types of JOIN in MongoDB
+| SQL        | MongoDB             |
+| ---------- | ------------------- |
+| INNER JOIN | `$lookup + $unwind` |
+| LEFT JOIN  | `$lookup`           |
+| RIGHT JOIN | Not directly        |
+| FULL JOIN  | Manual              |
+
+Performance Warning
+* `$lookup` is **expensive**
+* Prefer **embedding** when possible (orders → order_items)
+
+Real-World Insight
+    Best practice:
+    * **Users, Products → referenced**
+    * **Orders + items → embedded**
+    * Use `$lookup` only for **reports / dashboards**
+*/
+
+//-- -
+
+//39. Find users who placed orders above average order value.
+// Step: 1. Find average order value 2. Filter users above that
+db.orders.aggregate([
+  {
+    $group: {
+      _id: null,
+      avgOrderValue: { $avg: "$total" }
+    }
+  },
+  {
+    $lookup: {
+      from: "orders",
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $gt: ["$total", "$$avg"]
+            }
+          }
+        }
+      ],
+      as: "high_orders"
+    }
+  }
+])
+
+// Cleaner (practical approach):
+let avg = db.orders.aggregate([
+  { $group: { _id: null, avg: { $avg: "$total" } } }
+]).toArray()[0].avg
+
+db.orders.find({ total: { $gt: avg } })
+
+//40. Get products whose price is greater than average price.
+let avgPrice = db.products.aggregate([
+  { $group: { _id: null, avg: { $avg: "$price" } } }
+]).toArray()[0].avg
+
+db.products.find({
+  price: { $gt: avgPrice }
+})
+
+//41. Find the most expensive product purchased in any order.
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $lookup: {
+      from: "products",
+      localField: "order_items.product_id",
+      foreignField: "_id",
+      as: "product"
+    }
+  },
+  { $unwind: "$product" },
+  {
+    $sort: { "product.price": -1 }
+  },
+  { $limit: 1 }
+])
+
+//42. Find latest order per user.
+db.orders.aggregate([
+  { $sort: { user_id: 1, created_at: -1 } },
+  {
+    $group: {
+      _id: "$user_id",
+      latest_order: { $first: "$$ROOT" }
+    }
+  }
+])
+
+//43. Get top 3 most sold products.
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $group: {
+      _id: "$order_items.product_id",
+      total_sold: { $sum: "$order_items.quantity" }
+    }
+  },
+  { $sort: { total_sold: -1 } },
+  { $limit: 3 }
+])
+
+//44. Find users who purchased more than 2 different products.
+db.orders.aggregate([
+  { $unwind: "$order_items" },
+  {
+    $group: {
+      _id: "$user_id",
+      unique_products: { $addToSet: "$order_items.product_id" }
+    }
+  },
+  {
+    $project: {
+      count: { $size: "$unique_products" }
+    }
+  },
+  {
+    $match: {
+      count: { $gt: 2 }
+    }
+  }
+])
+
+/*
+**Advanced Concepts You Just Used**
+    `$sort` + `$limit` Top-N queries (very common)
+    `$addToSet` Unique values (like DISTINCT)
+    `$first` Get latest/first record after sorting
+
+Multi-step Aggregation Logic
+    Real-world pattern: $unwind → $lookup → $group → $sort → $limit
+
+Real Business Use Cases
+| Query             | Use Case               |
+| ----------------- | ---------------------- |
+| Above avg orders  | Premium customers      |
+| Top products      | Best sellers           |
+| Latest order      | User activity tracking |
+| Expensive product | Revenue insights       |
+*/
+
+//-- - 
+
+//45. Create an index on product name.
+db.products.createIndex({ name: 1 })
+// `1` = ascending index
+
+//46. Create a compound index on orders (user_id, created_at).
+db.orders.createIndex({ user_id: 1, created_at: -1 })
+// Useful for queries like:
+db.orders.find({ user_id: 1 }).sort({ created_at: -1 })
+
+//47. Analyze query performance before and after indexing.
+db.products.find({ name: "Laptop" }).explain("executionStats")
+// Before Index
+//      COLLSCAN (Collection Scan)
+//      → Scans entire collection ❌ Slow
+// After Index
+//      IXSCAN (Index Scan)
+//      → Uses index ✅ Fast
+// Example
+db.products.find({ name: "Laptop" }).explain("executionStats")
+/*
+Check:
+* `executionTimeMillis`
+* `totalDocsExamined`
+* `stage: "IXSCAN"`
+*/
+
+//48. Create a text index on product name and search products.
+// Create Text Index
+db.products.createIndex({ name: "text" })
+// Search Using Text Index
+db.products.find({
+  $text: { $search: "phone" }
+})
+//Advanced Text Search (Relevance Score)
+db.products.find(
+  { $text: { $search: "phone" } },
+  { score: { $meta: "textScore" } }
+).sort({ score: -1 })
+/*
+**Indexing Concepts (VERY IMPORTANT)**
+Types of Indexes
+| Type         | Use                              |
+| ------------ | -------------------------------- |
+| Single Field | `{ name: 1 }`                    |
+| Compound     | `{ user_id: 1, created_at: -1 }` |
+| Text         | Full-text search                 |
+| Multikey     | Arrays                           |
+| TTL          | Auto-delete                      |
+
+Compound Index Rule
+    Order matters!
+    { user_id: 1, created_at: -1 }
+
+✔ Works for:
+* `user_id`
+* `user_id + created_at`
+
+❌ Not for:
+* only `created_at`
+
+Index Trade-offs
+| Advantage         | Disadvantage  |
+| ----------------- | ------------- |
+| Faster reads      | Slower writes |
+| Efficient queries | More storage  |
+
+Real-World Best Practices
+* Index fields used in:
+  * `find()`
+  * `sort()`
+  * `$lookup`
+* Avoid over-indexing ❌
+* Always test with `.explain()`
+*/
+
+//-- - 
+
+//49. Write a transaction to: Insert order + Reduce product stock
+/*
+**Important Prerequisite**
+👉 Transactions work only in:
+* Replica Set (even single-node replica set is fine)
+* MongoDB 4.0+
+
+Goal
+* Insert order
+* Reduce product stock
+* Both must succeed together
+*/
+const session = db.getMongo().startSession()
+
+session.startTransaction()
+
+try {
+  const orders = session.getDatabase("ecommerce_db").orders
+  const products = session.getDatabase("ecommerce_db").products
+
+  // Step 1: Insert Order
+  orders.insertOne({
+    _id: 7,
+    user_id: 1,
+    total: 17000,
+    created_at: new Date(),
+    order_items: [
+      { product_id: 1, quantity: 1 },
+      { product_id: 3, quantity: 1 }
+    ],
+    status: "placed"
+  })
+
+  // Step 2: Reduce Stock
+  products.updateOne(
+    { _id: 1 },
+    { $inc: { stock: -1 } }
+  )
+
+  products.updateOne(
+    { _id: 3 },
+    { $inc: { stock: -1 } }
+  )
+
+  // Commit
+  session.commitTransaction()
+  print("Transaction Successful ✅")
+} catch (error) {
+  session.abortTransaction()
+  print("Transaction Rolled Back ❌")
+}
+
+//50. Rollback transaction if stock is insufficient.
+/*
+Logic
+👉 Before reducing stock:
+* Check if stock is enough
+* If not → rollback
+
+**Safe Transaction with Validation**
+*/
+const session = db.getMongo().startSession()
+
+session.startTransaction()
+
+try {
+  const dbRef = session.getDatabase("ecommerce_db")
+  const products = dbRef.products
+  const orders = dbRef.orders
+
+  const items = [
+    { product_id: 1, quantity: 2 },
+    { product_id: 2, quantity: 1 }
+  ]
+
+  // Step 1: Check stock
+  for (let item of items) {
+    let product = products.findOne({ _id: item.product_id })
+
+    if (!product || product.stock < item.quantity) {
+      throw new Error("Insufficient stock for product: " + item.product_id)
+    }
+  }
+
+  // Step 2: Insert order
+  orders.insertOne({
+    _id: 8,
+    user_id: 2,
+    total: 80000,
+    created_at: new Date(),
+    order_items: items,
+    status: "placed"
+  })
+
+  // Step 3: Reduce stock
+  for (let item of items) {
+    products.updateOne(
+      { _id: item.product_id },
+      { $inc: { stock: -item.quantity } }
+    )
+  }
+
+  // Commit
+  session.commitTransaction()
+  print("Transaction Successful ✅")
+} catch (error) {
+  session.abortTransaction()
+  print("Transaction Failed & Rolled Back ❌")
+  print(error.message)
+}
+
+/*
+**Key Concepts (VERY IMPORTANT)**
+## 🔹 ACID Properties
+| Property    | Meaning         |
+| ----------- | --------------- |
+| Atomicity   | All or nothing  |
+| Consistency | Valid data      |
+| Isolation   | No interference |
+| Durability  | Permanent       |
+
+Why Transactions?
+Without transaction:
+* Order inserted ❌
+* Stock not reduced ❌
+  ➡ Data inconsistency (very bad)
+
+Real-World Flow: Check Stock → Start Transaction → Insert Order → Update Stock → Commit
+
+Best Practices
+* Keep transactions **short**
+* Avoid heavy queries inside transaction
+* Always handle **rollback**
+
+Real System Example
+👉 E-commerce checkout:
+* Validate stock
+* Create order
+* Deduct stock
+* Process payment
+➡ All must succeed together
+
+
+*/
+//-- - 
+
+//51. Redesign schema to support: Product categories (embedded vs referenced)
+// Option 1: Embedded (Simple use case)
+{
+  _id: 1,
+  name: "Mobile Phone",
+  price: 15000,
+  stock: 50,
+  category: {
+    name: "Electronics",
+    department: "Gadgets"
+  }
+}
+/*
+✅ Fast reads
+❌ Duplicate category data
+*/
+
+//Option 2: Referenced (Recommended for real systems)
+// categories collection
+{
+  _id: 1,
+  name: "Electronics"
+}
+// products
+{
+  _id: 1,
+  name: "Mobile Phone",
+  price: 15000,
+  stock: 50,
+  category_id: 1
+}
+/*
+✅ Scalable
+✅ No duplication
+❌ Needs `$lookup`
+
+Recommendation
+👉 Use **referencing for categories** (shared data)
+*/
+
+//52. Support multiple addresses per user.
+// Updated User Schema
+{
+  _id: 1,
+  name: "Arun Kumar",
+  email: "arun@example.com",
+  addresses: [
+    {
+      type: "home",
+      street: "Main Road",
+      city: "Chennai",
+      pincode: "600001"
+    },
+    {
+      type: "work",
+      street: "IT Park",
+      city: "Bangalore",
+      pincode: "560001"
+    }
+  ]
+}
+// Embedded (best choice)
+// 👉 Addresses belong only to user → embed
+
+//53. Add payment details:method (UPI, Card, COD) + payment_status
+// Order Schema Update
+{
+  _id: 1,
+  user_id: 1,
+  total: 17000,
+  status: "placed",
+  payment: {
+    method: "UPI",       // UPI, Card, COD
+    payment_status: "paid"  // paid, pending, failed
+  }
+}
+/*
+Real Tip
+* Keep payment inside order
+* Payment is tightly coupled with order
+*/
+
+//54. Track order status: placed, shipped, delivered, cancelled
+// Add Status Field
+{
+  status: "placed" 
+}
+// Possible Values: placed → shipped → delivered → cancelled
+// Best Practice: Use ENUM-like validation in backend
+
+//55. Maintain order history (status changes over time).
+// Order with Status History
+{
+  _id: 1,
+  user_id: 1,
+  total: 17000,
+  order_items: [...],
+
+  status: "shipped",
+
+  status_history: [
+    {
+      status: "placed",
+      date: ISODate("2026-03-25T10:15:00")
+    },
+    {
+      status: "shipped",
+      date: ISODate("2026-03-26T08:00:00")
+    }
+  ]
+}
+/*
+Why This Design?
+| Feature        | Benefit         |
+| -------------- | --------------- |
+| Current status | Fast access     |
+| History array  | Audit trail     |
+| Embedded       | No joins needed |
+
+🧠 **Schema Design Rules (VERY IMPORTANT)**
+🔹 Embed When:
+* Data belongs together
+* Read-heavy
+* Small size
+
+👉 Example:
+* order_items
+* addresses
+* status_history
+
+🔹 Reference When:
+* Data shared across collections
+* Large or frequently updated
+
+👉 Example:
+* users
+* products
+* categories
+*/
+
+// Real-World Final Order Schema
+{
+  _id: 1,
+  user_id: 1,
+  total: 17000,
+  created_at: ISODate(),
+
+  order_items: [
+    { product_id: 1, quantity: 1 }
+  ],
+
+  payment: {
+    method: "UPI",
+    payment_status: "paid"
+  },
+
+  status: "placed",
+
+  status_history: [
+    { status: "placed", date: ISODate() }
+  ]
+}
+
+
+//-- -
+
+//56. Implement soft delete for users and products.
+// ❌ Problem: Deleting permanently = data loss + no audit
+// ✅ Solution: Soft Delete : 
+// Schema Update
+{
+  _id: 1,
+  name: "Arun Kumar",
+  email: "arun@example.com",
+  is_deleted: false,
+  deleted_at: null
+}
+
+//Soft Delete Operation
+db.users.updateOne(
+  { _id: 1 },
+  {
+    $set: {
+      is_deleted: true,
+      deleted_at: new Date()
+    }
+  }
+)
+
+// Always Filter Active Records
+db.users.find({ is_deleted: false })
+
+//Best Practice
+// Add index:
+db.users.createIndex({ is_deleted: 1 })
+
+//57. Design audit logs for order updates.
+/*
+Track:
+* Who changed?
+* What changed?
+* When?
+*/
+// audit_logs Collection
+{
+  _id: ObjectId(),
+  order_id: 1,
+  action: "status_update",
+  old_value: "placed",
+  new_value: "shipped",
+  updated_by: "admin",
+  updated_at: new Date()
+}
+
+// Insert Audit Log
+db.audit_logs.insertOne({
+  order_id: 1,
+  action: "status_update",
+  old_value: "placed",
+  new_value: "shipped",
+  updated_by: "admin",
+  updated_at: new Date()
+})
+
+/*
+🔥 Real Tip
+👉 Always log:
+* status change
+* payment updates
+* cancellations
+*/
+
+//58. Implement product reviews and ratings.
+// reviews Collection
+{
+  _id: ObjectId(),
+  product_id: 1,
+  user_id: 2,
+  rating: 4,
+  comment: "Good product",
+  created_at: new Date()
+}
+
+// Get Average Rating
+db.reviews.aggregate([
+  {
+    $group: {
+      _id: "$product_id",
+      avg_rating: { $avg: "$rating" }
+    }
+  }
+])
+
+//🔥 Optimization (Denormalization)
+// Store inside product:
+{
+  _id: 1,
+  name: "Mobile Phone",
+  avg_rating: 4.2,
+  total_reviews: 120
+}
+// Avoid heavy aggregation every time
+
+//59. Store product inventory history.
+// 🎯 Track stock changes over time
+// inventory_logs Collection
+{
+  _id: ObjectId(),
+  product_id: 1,
+  change: -2,
+  reason: "order_placed",
+  date: new Date()
+}
+/*
+🔹 Example Events
+| Event        | change |
+| ------------ | ------ |
+| Order placed | -1     |
+| Restock      | +10    |
+| Return       | +1     |
+
+🔥 Benefit
+
+* Debug stock issues
+* Audit tracking
+* Analytics
+*/
+
+
+//60. Optimize schema for high-read performance (denormalization).
+// Normalized (slow reads)
+Order → user_id → lookup user
+Order → product_id → lookup product
+
+// Denormalized (FAST reads)
+{
+  _id: 1,
+  user: {
+    user_id: 1,
+    name: "Arun Kumar"
+  },
+  order_items: [
+    {
+      product_id: 1,
+      name: "Mobile Phone",
+      price: 15000,
+      quantity: 1
+    }
+  ],
+  total: 15000
+}
+/*
+Why Denormalization?
+| Benefit         | Reason          |
+| --------------- | --------------- |
+| Faster reads    | No joins        |
+| Better scaling  | Read-heavy apps |
+| Simpler queries | No `$lookup`    |
+
+⚠️ Trade-off
+| Issue             | Reason                          |
+| ----------------- | ------------------------------- |
+| Data duplication  | Same data stored multiple times |
+| Update complexity | Need to sync data               |
+
+🧠 **Final Architecture Insight**
+🔥 Production MongoDB Design
+✔ Embedded
+* order_items
+* addresses
+* status_history
+
+✔ Referenced
+* users
+* products
+* categories
+
+✔ Denormalized (Hybrid)
+* user snapshot inside order
+* product snapshot inside order
+*/
+
+//🚀 **Final System Design (Enterprise Level)**
+{
+  _id: 1,
+
+  user: {
+    user_id: 1,
+    name: "Arun Kumar"
+  },
+
+  order_items: [
+    {
+      product_id: 1,
+      name: "Mobile Phone",
+      price: 15000,
+      quantity: 1
+    }
+  ],
+
+  payment: {
+    method: "UPI",
+    payment_status: "paid"
+  },
+
+  status: "delivered",
+
+  status_history: [
+    { status: "placed", date: ISODate() },
+    { status: "shipped", date: ISODate() },
+    { status: "delivered", date: ISODate() }
+  ],
+
+  total: 15000,
+  created_at: ISODate()
+}
+```
+
+mongosh "mongodb+srv://nithin:1234@cluster0.5bvyfus.mongodb.net/ecomdb" --apiVersion 1 --username nithin
+
