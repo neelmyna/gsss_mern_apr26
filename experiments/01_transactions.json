@@ -1,0 +1,74 @@
+[
+  {
+    "transaction_id": 1001,
+    "customer_name": "Arun Kumar",
+    "transaction_type": "Deposit",
+    "amount": 15000,
+    "currency": "INR",
+    "transaction_date": "2026-05-20",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1002,
+    "customer_name": "Priya Sharma",
+    "transaction_type": "Withdrawal",
+    "amount": 5000,
+    "currency": "INR",
+    "transaction_date": "2026-05-21",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1003,
+    "customer_name": "Rahul Verma",
+    "transaction_type": "Transfer",
+    "amount": 22000,
+    "currency": "INR",
+    "transaction_date": "2026-05-21",
+    "status": "Pending"
+  },
+  {
+    "transaction_id": 1004,
+    "customer_name": "Sneha Iyer",
+    "transaction_type": "Deposit",
+    "amount": 12000,
+    "currency": "INR",
+    "transaction_date": "2026-05-22",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1005,
+    "customer_name": "Karthik Raj",
+    "transaction_type": "Withdrawal",
+    "amount": 3000,
+    "currency": "INR",
+    "transaction_date": "2026-05-22",
+    "status": "Failed"
+  },
+  {
+    "transaction_id": 1006,
+    "customer_name": "Meena Devi",
+    "transaction_type": "Transfer",
+    "amount": 18000,
+    "currency": "INR",
+    "transaction_date": "2026-05-23",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1007,
+    "customer_name": "Vikram Singh",
+    "transaction_type": "Deposit",
+    "amount": 25000,
+    "currency": "INR",
+    "transaction_date": "2026-05-23",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1008,
+    "customer_name": "Anitha Rao",
+    "transaction_type": "Withdrawal",
+    "amount": 7000,
+    "currency": "INR",
+    "transaction_date": "2026-05-24",
+    "status": "Pending"
+  }
+]

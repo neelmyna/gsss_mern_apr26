@@ -1,0 +1,39 @@
+[
+  {
+    "transaction_id": 1003,
+    "customer_name": "Rahul Verma",
+    "transaction_type": "Transfer",
+    "amount": 30000,
+    "currency": "INR",
+    "transaction_date": "2026-05-25",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1005,
+    "customer_name": "Karthik Raj",
+    "transaction_type": "Withdrawal",
+    "amount": 4500,
+    "currency": "INR",
+    "transaction_date": "2026-05-25",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1009,
+    "customer_name": "Deepa Nair",
+    "transaction_type": "Deposit",
+    "amount": 17000,
+    "currency": "INR",
+    "transaction_date": "2026-05-25",
+    "status": "Completed"
+  },
+  {
+    "transaction_id": 1010,
+    "customer_name": "Suresh Babu",
+    "transaction_type": "Transfer",
+    "amount": 9500,
+    "currency": "INR",
+    "transaction_date": "2026-05-26",
+    "status": "Pending"
+  }
+]
+
